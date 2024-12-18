@@ -103,7 +103,7 @@ async def status(update: Update, context: CallbackContext):
 # Main function
 def main():
     init_db()
-    app = ApplicationBuilder().token("YOUR_BOT_TOKEN").build()
+    app = ApplicationBuilder().token("8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs").build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("buy", buy))
     app.add_handler(CommandHandler("status", status))

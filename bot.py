@@ -1,5 +1,7 @@
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext
+from telegram.ext.filters import Filters
+
 
 # توکن ربات تلگرام شما
 TELEGRAM_TOKEN = 'TELEGRAM_BOT_TOKEN'

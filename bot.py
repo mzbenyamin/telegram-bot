@@ -42,9 +42,9 @@ async def start(update: Update, context: CallbackContext):
 async def handle_message(update: Update, context: CallbackContext):
     query = update.message.text
     item_details = extract_item_details()
-    await update.message.reply_text(f"نام آیتم: {item_details['name']}
+await update.message.reply_text(f"""نام آیتم: {item_details['name']}
 ارزش آیتم: {item_details['value']}
-تصویر: {item_details['image']}")
+تصویر: {item_details['image']}""")
 
 # اصلی‌ترین فانکشن برای راه‌اندازی ربات
 def main():

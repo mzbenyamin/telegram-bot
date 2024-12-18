@@ -41,7 +41,7 @@ async def check_guess(update: Update, context: CallbackContext) -> None:
 
 # اصلی‌ترین تابع
 def main() -> None:
-    token = 'YOUR_BOT_TOKEN'  # توکن ربات
+    token = '8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs'  # توکن ربات
 
     # ایجاد Application
     application = Application.builder().token(token).build()

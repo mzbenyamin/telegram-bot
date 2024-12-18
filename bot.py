@@ -1,4 +1,4 @@
-//TELEGRAM_BOT_TOKEN
+# TELEGRAM_BOT_TOKEN
 
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext

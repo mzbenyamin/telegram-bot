@@ -26,7 +26,7 @@ async def random_funny_response(update: Update, context: CallbackContext) -> Non
 # اصلی‌ترین تابع
 def main() -> None:
     # توکن ربات خودتون رو از BotFather بگیرید
-    token = 'TELEGRAM_BOT_TOKEN'
+    token = '8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs'
     
     # ایجاد Application
     application = Application.builder().token(token).build()

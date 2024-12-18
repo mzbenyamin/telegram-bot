@@ -1,14 +1,12 @@
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext
-from telegram.ext.filters import Filters
-
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # توکن ربات تلگرام شما
 TELEGRAM_TOKEN = 'TELEGRAM_BOT_TOKEN'
 
-# تابعی برای پاسخ دادن به پیام‌ها
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text("سلام به ربات من خوش اومدید!")
+# تابعی برای پاسخ به پیام‌های متنی
+def handle_message(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("سلام خوبی جیگر؟ حالت چطوره؟")
 
 # تابع اصلی که ربات رو اجرا می‌کنه
 def main() -> None:
@@ -18,11 +16,8 @@ def main() -> None:
     # دریافت dispatcher برای ثبت هندلرها
     dispatcher = updater.dispatcher
 
-    # هندلر برای فرمان /start
-    dispatcher.add_handler(CommandHandler("start", start))
-
     # هندلر برای پیام‌های متنی
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, start))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
 
     # شروع ربات
     updater.start_polling()

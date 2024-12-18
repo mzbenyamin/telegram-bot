@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Updater, CallbackQueryHandler, CommandHandler
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # ایجاد صفحه اولیه بازی
 def create_board():
@@ -18,19 +18,19 @@ def generate_keyboard(board):
     return InlineKeyboardMarkup(keyboard)
 
 # شروع بازی
-def start(update, context):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     board = create_board()
     context.user_data["board"] = board
     context.user_data["current_player"] = "❌"
-    update.message.reply_text(
+    await update.message.reply_text(
         "بازی Tic Tac Toe شروع شد! نوبت بازیکن ❌",
         reply_markup=generate_keyboard(board),
     )
 
 # مدیریت کلیک روی کلیدها
-def button_handler(update, context):
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    query.answer()
+    await query.answer()
     board = context.user_data["board"]
     current_player = context.user_data["current_player"]
 
@@ -40,7 +40,7 @@ def button_handler(update, context):
         board[i][j] = current_player
         context.user_data["current_player"] = "⭕" if current_player == "❌" else "❌"
     else:
-        query.edit_message_text(
+        await query.edit_message_text(
             text="این خانه پر است! لطفاً جای دیگری کلیک کنید.",
             reply_markup=generate_keyboard(board),
         )
@@ -48,20 +48,20 @@ def button_handler(update, context):
 
     winner = check_winner(board)
     if winner:
-        query.edit_message_text(
+        await query.edit_message_text(
             text=f"بازیکن {winner} برنده شد! 🎉",
             reply_markup=generate_keyboard(board),
         )
         return
 
     if all(cell != " " for row in board for cell in row):
-        query.edit_message_text(
+        await query.edit_message_text(
             text="بازی مساوی شد! 🤝",
             reply_markup=generate_keyboard(board),
         )
         return
 
-    query.edit_message_text(
+    await query.edit_message_text(
         text=f"نوبت بازیکن {context.user_data['current_player']}",
         reply_markup=generate_keyboard(board),
     )
@@ -83,14 +83,12 @@ def check_winner(board):
 
 # راه‌اندازی ربات
 def main():
-    updater = Updater("8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs")
-    dispatcher = updater.dispatcher
+    application = Application.builder().token("8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs").build()
 
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CallbackQueryHandler(button_handler))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(button_handler))
 
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == "__main__":
     main()

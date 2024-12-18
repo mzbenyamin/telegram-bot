@@ -1,7 +1,5 @@
-# TELEGRAM_BOT_TOKEN
-
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
 import random
 
 # پاسخ‌های جالب
@@ -27,9 +25,10 @@ def random_funny_response(update: Update, context: CallbackContext) -> None:
 # اصلی‌ترین تابع
 def main() -> None:
     # توکن ربات خودتون رو از BotFather بگیرید
-    token = 'TELEGRAM_BOT_TOKEN'
+    token = 'YOUR_BOT_TOKEN'
     
-    updater = Updater(token)
+    # ایجاد Updater و Dispatcher
+    updater = Updater(token, use_context=True)
 
     dispatcher = updater.dispatcher
 
@@ -38,7 +37,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("help", help_command))
 
     # پیام‌های عمومی
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, random_funny_response))
+    dispatcher.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, random_funny_response))
 
     # شروع ربات
     updater.start_polling()
@@ -48,4 +47,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-

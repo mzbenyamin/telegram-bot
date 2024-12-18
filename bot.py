@@ -1,5 +1,6 @@
+# TELEGRAM_BOT_TOKEN
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 import random
 
 # پاسخ‌های جالب
@@ -11,39 +12,34 @@ funny_responses = [
 ]
 
 # دستورات ربات
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('سلام! من ربات باحال تلگرامی هستم. بگو ببینم چطوری می‌تونم بهت کمک کنم؟')
+async def start(update: Update, context: CallbackContext) -> None:
+    await update.message.reply_text('سلام! من ربات باحال تلگرامی هستم. بگو ببینم چطوری می‌تونم بهت کمک کنم؟')
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('من می‌تونم به پیام‌های شما جواب‌های خلاقانه بدم. امتحان کن!')
+async def help_command(update: Update, context: CallbackContext) -> None:
+    await update.message.reply_text('من می‌تونم به پیام‌های شما جواب‌های خلاقانه بدم. امتحان کن!')
 
 # تابع برای پیام‌های تصادفی
-def random_funny_response(update: Update, context: CallbackContext) -> None:
+async def random_funny_response(update: Update, context: CallbackContext) -> None:
     response = random.choice(funny_responses)
-    update.message.reply_text(response)
+    await update.message.reply_text(response)
 
 # اصلی‌ترین تابع
 def main() -> None:
     # توکن ربات خودتون رو از BotFather بگیرید
-    token = 'YOUR_BOT_TOKEN'
+    token = 'TELEGRAM_BOT_TOKEN'
     
-    # ایجاد Updater و Dispatcher
-    updater = Updater(token, use_context=True)
-
-    dispatcher = updater.dispatcher
+    # ایجاد Application
+    application = Application.builder().token(token).build()
 
     # دستورات
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
 
     # پیام‌های عمومی
-    dispatcher.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, random_funny_response))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, random_funny_response))
 
     # شروع ربات
-    updater.start_polling()
-
-    # ربات برای همیشه اجرا بمونه
-    updater.idle()
+    application.run_polling()
 
 if __name__ == '__main__':
     main()

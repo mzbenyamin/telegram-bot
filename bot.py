@@ -4,7 +4,7 @@ from telegram.ext import Application, MessageHandler, filters, CallbackContext
 import sympy as sp
 
 # توکن ربات تلگرام خودتون رو اینجا وارد کنید
-TELEGRAM_TOKEN = "TELEGRAM_BOT_TOKEN"
+TELEGRAM_TOKEN = "8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs"
 
 # تنظیمات لاگ برای ردیابی خطاها
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

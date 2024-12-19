@@ -27,11 +27,12 @@ async def search_item(update: Update, context: ContextTypes.DEFAULT_TYPE):
         item_soup = BeautifulSoup(item_response.text, 'html.parser')
 
         name = "#popup-item > div > div > div.modal-header.text-center > h4"
-        category = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2)
-        value = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(3) > td:nth-child(2)
-        details = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(4) > td:nth-child(2)
-        link = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(5) > td:nth-child(2) > a
-        image_url = #popup-item > div > div > div.modal-body > div > div > img
+        category = "#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2)"
+        value = "#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(3) > td:nth-child(2)"
+        details = "#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(4) > td:nth-child(2)"
+        link = "#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(5) > td:nth-child(2) > a"
+        image_url = "#popup-item > div > div > div.modal-body > div > div > img"
+
         
         image_response = requests.get(image_url, stream=True)
         if image_response.status_code == 200:

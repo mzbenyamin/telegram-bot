@@ -20,7 +20,7 @@ def search_item(update: Update, context: CallbackContext):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # استخراج لینک آیتم
-        item_link = soup.select_one("a[href*='/items/'])
+        item_link = soup.select_one("a[href*='/items/']")
         if not item_link:
             update.message.reply_text("هیچ آیتمی با این نام یافت نشد.")
             return

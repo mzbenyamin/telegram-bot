@@ -52,7 +52,7 @@ async def search_item(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"خطا: {e}")
 
 def main():
-    application = Application.builder().token("YOUR_BOT_TOKEN").build()
+    application = Application.builder().token("8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs").build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, search_item))
     application.run_polling()

@@ -20,7 +20,7 @@ def search_item(update: Update, context: CallbackContext):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # استخراج لینک آیتم
-        item_link = soup.select_one("a[href*='/items/"])
+        item_link = soup.select_one("a[href*='/items/'])
         if not item_link:
             update.message.reply_text("هیچ آیتمی با این نام یافت نشد.")
             return
@@ -61,7 +61,7 @@ def search_item(update: Update, context: CallbackContext):
 
 def main():
     # جایگزین کردن 'YOUR_BOT_TOKEN' با توکن ربات تلگرام
-    updater = Updater("YOUR_BOT_TOKEN")
+    updater = Updater("8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs")
 
     dp = updater.dispatcher
     dp.add_handler(CommandHandler("start", start))

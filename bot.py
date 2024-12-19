@@ -1,57 +1,74 @@
-
 import requests
 from bs4 import BeautifulSoup
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, CallbackContext
+from telegram import Update, Bot, InputMediaPhoto
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# تابع استخراج آیتم‌ها از سایت Platopedia
-def extract_item_details():
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text("سلام! برای دریافت اطلاعات، نام آیتم مورد نظر خود را وارد کنید.")
+
+def search_item(update: Update, context: CallbackContext):
+    query = update.message.text.strip()
     url = "https://platopedia.com/items"
-    response = requests.get(url)
+    
+    try:
+        # ارسال درخواست به سایت با پارامتر جستجو
+        response = requests.get(url, params={"search": query})
+        if response.status_code != 200:
+            update.message.reply_text("خطا در دسترسی به سایت. لطفاً دوباره تلاش کنید.")
+            return
 
-    # بررسی موفقیت‌آمیز بودن درخواست
-    if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # استخراج نام آیتم
-        item_name = soup.select_one("#popup-item > div > div > div.modal-header.text-center > h4")
-        item_name = item_name.text.strip() if item_name else "نامی یافت نشد"
+        # استخراج لینک آیتم
+        item_link = soup.select_one("a[href*='/items/"])
+        if not item_link:
+            update.message.reply_text("هیچ آیتمی با این نام یافت نشد.")
+            return
 
-        # استخراج ارزش آیتم
-        item_value = soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(3) > td:nth-child(2)")
-        item_value = item_value.text.strip() if item_value else "ارزش یافت نشد"
+        # استخراج اطلاعات از صفحه جزئیات آیتم
+        item_url = item_link['href']
+        item_response = requests.get(item_url)
+        item_soup = BeautifulSoup(item_response.text, 'html.parser')
 
-        # استخراج عکس آیتم
-        item_image = soup.select_one("#popup-item > div > div > div.modal-body > div > div > img")
-        item_image_url = item_image['src'] if item_image else "عکس یافت نشد"
+        # استخراج جزئیات آیتم
+        name = item_soup.select_one("#popup-item > div > div > div.modal-header.text-center > h4").text.strip()
+        category = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2)").text.strip()
+        value = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(3) > td:nth-child(2) > font").text.strip()
+        details = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(4) > td:nth-child(2)").text.strip()
+        link = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(5) > td:nth-child(2)").text.strip()
+        image_url = item_soup.select_one("#popup-item > div > div > div.modal-body > div:nth-child(2) > div > img")['src']
 
-        # نمایش اطلاعات استخراج‌شده
-        return {
-            "name": item_name,
-            "value": item_value,
-            "image": item_image_url
-        }
-    else:
-        return "مشکلی در درخواست به سایت پیش آمده."
+        # دانلود عکس آیتم
+        image_response = requests.get(image_url, stream=True)
+        if image_response.status_code == 200:
+            bot = Bot(context.bot.token)
+            bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=image_response.content,
+                caption=(
+                    f"\U0001F4D6 نام: {name}\n"
+                    f"\U0001F4C2 دسته‌بندی: {category}\n"
+                    f"\U0001F4B0 ارزش آیتم: {value}\n"
+                    f"\U0001F4D1 اطلاعات آیتم: {details}\n"
+                    f"\U0001F517 لینک آیتم: {link}"
+                )
+            )
+        else:
+            update.message.reply_text("خطا در دانلود تصویر آیتم.")
+    
+    except Exception as e:
+        update.message.reply_text(f"خطا: {e}")
 
-# دستور start برای شروع ربات
-async def start(update: Update, context: CallbackContext):
-    await update.message.reply_text("سلام! لطفاً چیزی که می‌خواهید جستجو کنید رو بنویسید.")
-
-# دریافت پیام و جستجو در سایت
-async def handle_message(update: Update, context: CallbackContext):
-    query = update.message.text
-    item_details = extract_item_details()
-await update.message.reply_text(f"""نام آیتم: {item_details['name']}
-ارزش آیتم: {item_details['value']}
-تصویر: {item_details['image']}""")
-
-# اصلی‌ترین فانکشن برای راه‌اندازی ربات
 def main():
-    app = ApplicationBuilder().token('8011536409:AAGUT4m9BFxnQxppgBtbIrMXV-wF19txobs').build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    app.run_polling()
+    # جایگزین کردن 'YOUR_BOT_TOKEN' با توکن ربات تلگرام
+    updater = Updater("YOUR_BOT_TOKEN")
+
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, search_item))
+
+    updater.start_polling()
+    updater.idle()
 
 if __name__ == "__main__":
     main()

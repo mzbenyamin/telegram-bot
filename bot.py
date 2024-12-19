@@ -26,13 +26,13 @@ async def search_item(update: Update, context: ContextTypes.DEFAULT_TYPE):
         item_response = requests.get(item_url)
         item_soup = BeautifulSoup(item_response.text, 'html.parser')
 
-        name = item_soup.select_one("#popup-item > div > div > div.modal-header.text-center > h4").text.strip()
-        category = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2)").text.strip()
-        value = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(3) > td:nth-child(2) > font").text.strip()
-        details = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(4) > td:nth-child(2)").text.strip()
-        link = item_soup.select_one("#popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(5) > td:nth-child(2)").text.strip()
-        image_url = item_soup.select_one("#popup-item > div > div > div.modal-body > div:nth-child(2) > div > img")['src']
-
+        name = #popup-item > div > div > div.modal-header.text-center > h4
+        category = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2)
+        value = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(3) > td:nth-child(2)
+        details = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(4) > td:nth-child(2)
+        link = #popup-item > div > div > div.modal-body > table > tbody > tr:nth-child(5) > td:nth-child(2) > a
+        image_url = #popup-item > div > div > div.modal-body > div > div > img
+        
         image_response = requests.get(image_url, stream=True)
         if image_response.status_code == 200:
             await context.bot.send_photo(
